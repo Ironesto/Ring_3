@@ -4,6 +4,7 @@
 # include <stdio.h>
 # include <sys/time.h>
 # include <unistd.h>
+# include <pthread.h>
 
 typedef struct	s_time
 {
