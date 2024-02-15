@@ -193,7 +193,7 @@ void	*routine(void *data)
 	printf("su fork es el %d y el de la izquierda %d\n",philo->fork->forktb, philo->fork_l->forktb); */
 	while (1)
 	{
-		usleep(500);
+		//usleep(2000);
 		if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)
 		{
 			letseat(philo);
