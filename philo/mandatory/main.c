@@ -1,102 +1,99 @@
 #include "philo.h"
 
-void	ft_gettime(struct timeval time, int sec, t_table *table)
+time_t	ft_gettime(t_table *table)
 {
-	gettimeofday(&time, NULL);
-	table->tz[0] = (time.tv_sec - sec) * 1000 + (time.tv_usec / 1000);
+	gettimeofday(&table->time, NULL);
+	return ((table->time.tv_sec * 1000) + (table->time.tv_usec / 1000));
 }
 
-void	ft_initphilos(t_table *table)
+time_t	ft_gettimephl(t_philo *table)
+{
+	gettimeofday(&table->time, NULL);
+	return ((table->time.tv_sec * 1000) + (table->time.tv_usec / 1000));
+}
+
+void	the_final(t_philo *philo)
+{
+	philo->td = ft_gettimephl(philo);
+	if (philo->td >= philo->gone + philo->die)
+	{
+		printf("\n\nPHILO %d HA MUERTO\n", philo->philo);
+		printf("%ld tiempo muerte\n\n", philo->td - philo->gone);
+		exit(1);
+	}
+}
+void	usingforks(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->fork->mutex_forktb);
+	pthread_mutex_lock(&philo->fork_l->mutex_forktb);
+	philo->fork->forktb = 1;
+	philo->fork_l->forktb = 1;
+	philo->td = philo->cont;
+	philo->cont = ft_gettimephl(philo);
+	philo->gone = ft_gettimephl(philo);
+	while (philo->cont <= philo->gone + philo->eat)
+	{
+		philo->cont = ft_gettimephl(philo);
+		the_final(philo);
+	}
+	philo->td = ft_gettimephl(philo);
+	printf("%ld tmls philo %d comiendo %ld \n",philo->ttotal, philo->philo, philo->cont - philo->gone);
+	philo->fork->forktb = 0;
+	philo->fork_l->forktb = 0;
+	pthread_mutex_unlock(&philo->fork->mutex_forktb);
+	pthread_mutex_unlock(&philo->fork_l->mutex_forktb);
+}
+
+void	sleeping(t_philo *philo)
+{
+	philo->gone = ft_gettimephl(philo);
+	printf("%ld tmls philo %d durmiendo %ld \n",philo->ttotal, philo->philo, philo->cont - philo->gone);
+	while (philo->cont <= philo->gone + philo->slp)
+	{
+		philo->cont = ft_gettimephl(philo);
+		the_final(philo);
+	}
+}
+
+void	is_think(t_philo *philo)
 {
 	int	i;
 
 	i = 0;
-	while(i < table->phl)
+	while (philo->fork->forktb != 0 && philo->fork_l->forktb != 0)
 	{
-		table->philo[i].philo = i;
-		table->philo[i].die = table->tdie;
-		table->philo[i].eat = table->teat;
-		table->philo[i].slp = table->tslp;
-		table->philo[i].ms = &table->tz[0];
-		table->philo[i].fork = &table->forktb[i];
-		if (i - 1 < 0)
-			table->philo[i].fork_l = &table->forktb[table->phl - 1];
-		else
-			table->philo[i].fork_l = &table->forktb[i - 1];
-		//agregar numero de comidas
-		i++;
+		if (i == 0)
+		{
+			printf("%ld tmls philo %d pensando \n",philo->ttotal, philo->philo);
+			i = 1;
+		}
+		the_final(philo);
 	}
-}
-
-
-void	ft_init(t_table *table, char **argv, struct timeval	time)
-{
-	int i = 0;
-
-
-	table->phl = ft_atoi(argv[1]);
-	table->tdie = ft_atoi(argv[2]);
-	table->teat = ft_atoi(argv[3]);
-	table->tslp = ft_atoi(argv[4]);
-	table->tz = malloc(sizeof(time_t));
-	table->philo = malloc(sizeof(t_philo) * table->phl);
-	table->forktb = malloc(sizeof(t_forktb) * table->phl);
-	if(argv[5])
-		table->neat = ft_atoi(argv[5]);
-/* 	while(i < table->phl)
-	{
-		table->fork[i] = i;
-		i++;
-	} */
-	ft_initphilos(table);
-
+	
 }
 
 void	*routine(void *data)
 {
 	t_philo	*philo = (t_philo *)data;
-	gettimeofday(&philo->time, NULL);
-	//printf("philo nº = %d con fork %d y left fork %d\n", philo->philo, philo->fork->forktb, philo->fork_l->forktb);
-	printf("philo nº %d: %ld ms antes\n",philo->philo, philo->ms[0]);
-	if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)		//aqui come
+
+	while(1)
 	{
-		pthread_mutex_lock(&philo->fork->mutex_forktb);
-		pthread_mutex_lock(&philo->fork_l->mutex_forktb);
-		//puts("tiene");
-		philo->fork->forktb = 1;
-		philo->fork_l->forktb = 1;
-		printf("philo nº %d: %ld ms comiendo\n",philo->philo, philo->ms[0]);
-		usleep(philo->eat * 1000);
-		philo->fork->forktb = 0;
-		philo->fork_l->forktb = 0;
-		pthread_mutex_unlock(&philo->fork->mutex_forktb);
-		pthread_mutex_unlock(&philo->fork_l->mutex_forktb);
+		philo->cont = ft_gettimephl(philo);
+		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
+		//printf("soy phil %d eat %d y %ld ms\n", philo->philo, philo->eat, philo->gone);
+		if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)
+		{
+			usingforks(philo);
+			usleep(500);
+			sleeping(philo);
+			usleep(500);
+			//comprobar muerte en sleep constante
+		}
+			is_think(philo);
+			usleep(500);
+			//comprobar muerte constantemente miestras piensa
+		//usleep(500);
 	}
-	printf("philo nº %d: %ld ms despues\n",philo->philo, philo->ms[0]);
-/* 	else if (philo->fork->forktb == 1)
-		philo->fork->forktb == 0; */
-	//printf("philo nº %d: estado del tenedor %d\n", philo->philo, philo->fork->forktb);
-/* 	if (fork == TRUE)
-		eat(usleep(time eat * 1000) && time to die = 0);
-		sleep(time to die += time to sleep);
-	else
-	{
-		think(time to die += time to think);
-		comp dead;
-	} */
-	//pthread_mutex_lock(&table->counter.mutex_count);
-/* 	if (table->fork[0] == 0)
-		table->fork[0] = 1;
-	else
-		table->fork[0] = 0; */
-	//pthread_mutex_unlock(&table->counter.mutex_count);
-/* 	printf("fork : %d\n", table->fork[0]);
-	if (table->fork[0] == 0)
-	{
-		printf("HE DIED %ldms\n", table->tz);
-	}
-	else
-		printf("HE LIVES %ldms\n", table->tz); */
 	return (NULL);
 }
 
@@ -105,21 +102,20 @@ int	main(int argc, char **argv)
 	struct timeval	time;
 	t_table			table;
 	int				i;
+	time_t	temp;
 
 	i = 0;
 	ft_init(&table, argv, time);
-	gettimeofday(&time, NULL);
-	//pthread_mutex_init(&counter.mutex_count, NULL);
-	while (1)
+	while (i < table.phl)
 	{
-		//printf("%ld mls\n", ft_gettime(time, time.tv_sec));
-		ft_gettime(time, time.tv_sec, &table);
 		pthread_create(&table.philo[i].ph_thread, NULL, routine, &table.philo[i]);
-		//pthread_join(table.philo[i].ph_thread, NULL);
 		i++;
-		if (i == table.phl)
-			i = 0;
-		usleep(1 * 350000);
+	}
+	i = 0;
+	while (i < table.phl)
+	{	
+		pthread_join(table.philo[i].ph_thread, NULL);
+		i++;
 	}
 	//pthread_mutex_destroy(&counter.mutex_count);
 	return (0);
