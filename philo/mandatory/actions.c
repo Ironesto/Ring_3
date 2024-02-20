@@ -11,7 +11,7 @@ void	letseat(t_philo *philo)
 	philo->fork->forktb = 1;
 	philo->fork_l->forktb = 1;
 	philo->final = philo->tnow + philo->tdie;
-	printf("philo %d esta comiendo\n", philo->philo);
+	printf("%ld philo %d esta comiendo\n", philo->ms[0], philo->philo);
 	while (philo->tnow < temp)
 	{
 		philo->tnow = ft_gettimephl(philo);
@@ -34,7 +34,7 @@ void	letsleep(t_philo *philo)
 
 	//philo->tnow = ft_gettimephl(philo);
 	temp = philo->tnow + philo->tslp;
-	printf("philo %d esta durmiendo\n", philo->philo);
+	printf("%ld philo %d esta durmiendo\n", philo->ms[0], philo->philo);
 	while (philo->tnow < temp)
 	{
 		philo->tnow = ft_gettimephl(philo);
@@ -49,7 +49,7 @@ void	letsleep(t_philo *philo)
 
 void	letsthink(t_philo *philo)
 {
-	printf("philo %d pensando\n",philo->philo);
+	printf("%ld philo %d pensando\n", philo->ms[0], philo->philo);
 	while (philo->fork->forktb != 0 && philo->fork_l->forktb != 0)
 	{
 		philo->tnow = ft_gettimephl(philo);

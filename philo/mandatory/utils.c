@@ -72,6 +72,7 @@ void	ft_initphilo(t_table *table)
 		table->philo[i].tslp = table->tslp;
 		table->philo[i].fork = &table->forktb[i];
 		table->philo[i].ms = &table->tz[0];
+		table->philo[i].ttotal = &table->ttotal[0];
 		//agregar numero de comidas
 		if (i - 1 < 0)
 			table->philo[i].fork_l = &table->forktb[table->phl - 1];
@@ -99,6 +100,7 @@ void	ft_init(t_table *table, char **argv)
 		i++;
 	}
 	i = 0;
+	pthread_mutex_init(&table->ttotal[0].mutex_ttotal, NULL);
 	while(i < table->phl)
 	{
 		pthread_mutex_init(&table->forktb[i].mutex_forktb, NULL);

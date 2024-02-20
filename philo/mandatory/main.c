@@ -31,7 +31,9 @@ void	*routine(void *data)
 	while (1)
 	{
 		//usleep(2000);
-		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
+		pthread_mutex_lock(&philo->ttotal->mutex_ttotal);
+		philo->ttotal[0].ttotal = ft_gettimephl(philo) - philo->ms[0];
+		pthread_mutex_unlock(&philo->ttotal->mutex_ttotal);
 		if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)
 		{
 			letseat(philo);
@@ -69,6 +71,7 @@ int	main(int argc, char **argv)
 	i = 0;		//modificar muerte, añadir tiempo y pensar que mas hace falta cambiar
 	ft_init(&table, argv);
 	ft_join(&table);
+	//destruir mutex
 /* 	while(i < table.phl)	//comprobar que todos los philos tengan los valores bien
 	{
 		printf("philo %d, die %ld, eat %ld, sleep %ld tnow %ld\n",table.philo[i].philo,table.philo[i].tdie, table.philo[i].teat, table.philo[i].tslp, table.philo[i].tnow);

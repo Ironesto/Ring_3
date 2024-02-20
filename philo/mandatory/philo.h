@@ -13,6 +13,12 @@ typedef struct s_forktb
 	pthread_mutex_t	mutex_forktb;
 }	t_forktb;
 
+typedef struct s_ttotal
+{
+	int				ttotal;
+	pthread_mutex_t	mutex_ttotal;
+}	t_ttotal;
+
 typedef struct s_philo
 {
 	struct timeval	time;
@@ -23,7 +29,7 @@ typedef struct s_philo
 	time_t			teat;
 	time_t			tslp;
 	time_t			neat;
-	time_t			ttotal;
+	t_ttotal			*ttotal;
 	time_t			*ms;
 	t_forktb		*fork;
 	t_forktb		*fork_l;
@@ -40,6 +46,7 @@ typedef struct s_table
 	time_t		teat;
 	time_t		tslp;
 	time_t		neat;
+	t_ttotal		*ttotal;
 	time_t		*tz;
 }   t_table;
 
