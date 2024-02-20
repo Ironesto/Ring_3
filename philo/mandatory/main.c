@@ -1,12 +1,18 @@
 #include "philo.h"
 
+time_t	ft_gettime(t_table *table)
+{
+	gettimeofday(&table->time, NULL);
+	return ((table->time.tv_sec * 1000) + (table->time.tv_usec / 1000));
+}
+
 time_t	ft_gettimephl(t_philo *table)
 {
 	gettimeofday(&table->time, NULL);
 	return ((table->time.tv_sec * 1000) + (table->time.tv_usec / 1000));
 }
 
-void	the_final(t_philo *philo)
+/* void	the_final(t_philo *philo)
 {
 	philo->td = ft_gettimephl(philo);
 	if (philo->td >= philo->gone + philo->die)
@@ -15,7 +21,7 @@ void	the_final(t_philo *philo)
 		printf("%ld tiempo muerte\n\n", philo->td - philo->gone);
 		exit(1);
 	}
-}
+} */
 
 void	*routine(void *data)
 {
@@ -25,6 +31,7 @@ void	*routine(void *data)
 	while (1)
 	{
 		//usleep(2000);
+		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 		if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)
 		{
 			letseat(philo);

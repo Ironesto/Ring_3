@@ -32,7 +32,7 @@ int	ft_atoi(const char *nptr)
 	return (0);
 }
 
-void	ft_initphilos(t_table *table)
+/* void	ft_initphilos(t_table *table)
 {
 	int	i;
 
@@ -55,7 +55,7 @@ void	ft_initphilos(t_table *table)
 		//agregar numero de comidas
 		i++;
 	}
-}
+} */
 
 
 void	ft_initphilo(t_table *table)
@@ -71,6 +71,8 @@ void	ft_initphilo(t_table *table)
 		table->philo[i].teat = table->teat;
 		table->philo[i].tslp = table->tslp;
 		table->philo[i].fork = &table->forktb[i];
+		table->philo[i].ms = &table->tz[0];
+		//agregar numero de comidas
 		if (i - 1 < 0)
 			table->philo[i].fork_l = &table->forktb[table->phl - 1];
 		else
@@ -90,6 +92,7 @@ void	ft_init(t_table *table, char **argv)
 	table->tslp = ft_atoi(argv[4]);
 	table->philo = malloc((sizeof(t_philo) * table->phl));
 	table->forktb = malloc((sizeof(t_forktb) * table->phl));
+	table->tz[0] = ft_gettime(table);
 	while(i < table->phl)	// numera forks para debuguear
 	{
 		table->forktb[i].forktb = 0;
