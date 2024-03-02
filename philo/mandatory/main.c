@@ -65,7 +65,7 @@ void	*routine(void *data)
 	philo = (t_philo *)data;
 	while (1)
 	{
-		usleep(1000);
+		usleep(500);
 		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 		if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)
 		{
@@ -73,7 +73,8 @@ void	*routine(void *data)
 			philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 			sleeping(philo);
 		}
-		letsthink(philo);
+		if (philo->fork->forktb != 0 || philo->fork_l->forktb != 0)
+			letsthink(philo);
 	}
 	return (NULL);
 }
@@ -101,7 +102,7 @@ int	main(int argc, char **argv)
 	i = 0;
 	while (i < table.phl)
 	{
-		pthread_mutex_init(&table.forktb[i].mutex_forktb, NULL);
+		pthread_mutex_destroy(&table.forktb[i].mutex_forktb);
 		i++;
 	}
 	return (0);
