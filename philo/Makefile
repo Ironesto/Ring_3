@@ -5,9 +5,7 @@ SRC_B := $(wildcard ./bonus/*.c)
 OBJS        = $(SRC:.c=.o)
 OBJS_B      = $(SRC_B:.c=.o)
 CC	        = gcc
-#CFLAGS      = -Wall -Werror -Wextra
-#GLFW_FLAGS  = -ldl -lglfw -lm
-GLFW_FLAGS = -lglfw -L /Users/$(USER)/.brew/opt/glfw/lib/ -lm
+CFLAGS      = -pthread -Wall -Werror -Wextra
 RM	        = rm -f
 
 .c.o:
@@ -16,12 +14,10 @@ RM	        = rm -f
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(OBJS) \
-	$(GLFW_FLAGS) -o $(NAME)
+	$(CC) $(OBJS) -o $(NAME)
 
 bonus: $(OBJS_B)
-	$(CC) $(OBJS_B) \
-	$(GLFW_FLAGS) -o $(NAME)
+	$(CC) $(OBJS_B) -o $(NAME)
 
 clean:
 	@$(RM) $(OBJS) $(OBJS_B) && printf "All objects cleaned! :)\n"
