@@ -65,13 +65,15 @@ void	*routine(void *data)
 	philo = (t_philo *)data;
 	while (1)
 	{
-		usleep(500);
+		//usleep(500);
 		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 		if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)
 		{
 			eating(philo);
+			usleep(500);
 			philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 			sleeping(philo);
+			usleep(500);
 		}
 		if (philo->fork->forktb != 0 || philo->fork_l->forktb != 0)
 			letsthink(philo);
