@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gpaez-ga <gpaez-ga@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/02 20:13:21 by gpaez-ga          #+#    #+#             */
+/*   Updated: 2024/03/02 20:17:17 by gpaez-ga         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 void	ft_initphilos(t_table *table)
@@ -5,7 +17,7 @@ void	ft_initphilos(t_table *table)
 	int	i;
 
 	i = 0;
-	while(i < table->phl)
+	while (i < table->phl)
 	{
 		table->philo[i].philo = i;
 		table->philo[i].die = table->tdie;
@@ -23,10 +35,11 @@ void	ft_initphilos(t_table *table)
 	}
 }
 
-void	ft_init(t_table *table, char **argv, struct timeval	time)
+void	ft_init(t_table *table, char **argv)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	table->phl = ft_atoi(argv[1]);
 	table->tdie = ft_atoi(argv[2]);
 	table->teat = ft_atoi(argv[3]);
@@ -35,9 +48,9 @@ void	ft_init(t_table *table, char **argv, struct timeval	time)
 	table->tz[0] = ft_gettime(table);
 	table->philo = malloc(sizeof(t_philo) * table->phl);
 	table->forktb = malloc(sizeof(t_forktb) * table->phl);
-	if(argv[5])
+	if (argv[5])
 		table->neat = ft_atoi(argv[5]);
-	while(i < table->phl)
+	while (i < table->phl)
 	{
 		pthread_mutex_init(&table->forktb[i].mutex_forktb, NULL);
 		i++;
@@ -47,9 +60,10 @@ void	ft_init(t_table *table, char **argv, struct timeval	time)
 
 void	*routine(void *data)
 {
-	t_philo	*philo = (t_philo *)data;
+	t_philo	*philo;
 
-	while(1)
+	philo = (t_philo *)data;
+	while (1)
 	{
 		usleep(1000);
 		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
@@ -66,26 +80,26 @@ void	*routine(void *data)
 
 int	main(int argc, char **argv)
 {
-	struct timeval	time;
-	t_table			table;
-	int				i;
-	time_t			temp;
+	t_table	table;
+	int		i;
 
-	i = 0;
-	ft_init(&table, argv, time);
-	while (i < table.phl)
+	if (argc < 0)
+		return (1);
+	i = -1;
+	ft_init(&table, argv);
+	while (++i < table.phl)
 	{
-		pthread_create(&table.philo[i].ph_thread, NULL, routine, &table.philo[i]);
-		i++;
+		pthread_create(&table.philo[i].ph_thread,
+			NULL, routine, &table.philo[i]);
 	}
 	i = 0;
 	while (i < table.phl)
-	{	
+	{
 		pthread_join(table.philo[i].ph_thread, NULL);
 		i++;
 	}
 	i = 0;
-	while(i < table.phl)
+	while (i < table.phl)
 	{
 		pthread_mutex_init(&table.forktb[i].mutex_forktb, NULL);
 		i++;

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gpaez-ga <gpaez-ga@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/02 20:10:59 by gpaez-ga          #+#    #+#             */
+/*   Updated: 2024/03/02 20:11:45 by gpaez-ga         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 static int	ft_putnbr_atoi(const char *str, int i)
@@ -46,15 +58,18 @@ time_t	ft_gettimephl(t_philo *table)
 
 void	ft_join(t_table *table)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	while (i < table->phl)
 	{
-		pthread_create(&table->philo[i].ph_thread, NULL, routine, &table->philo[i]);
+		pthread_create(&table->philo[i].ph_thread,
+			NULL, routine, &table->philo[i]);
 		i++;
 	}
 	i = 0;
 	while (i < table->phl)
-	{	
+	{
 		pthread_join(table->philo[i].ph_thread, NULL);
 		i++;
 	}

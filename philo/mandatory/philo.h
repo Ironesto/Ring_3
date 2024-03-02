@@ -1,5 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gpaez-ga <gpaez-ga@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/02 20:11:53 by gpaez-ga          #+#    #+#             */
+/*   Updated: 2024/03/02 20:13:12 by gpaez-ga         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_H
-#define PHILO_H
+# define PHILO_H
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -9,9 +21,9 @@
 
 typedef struct s_forktb
 {
-    int				forktb;
-    pthread_mutex_t	mutex_forktb;
-}   t_forktb;
+	int				forktb;
+	pthread_mutex_t	mutex_forktb;
+}	t_forktb;
 
 typedef struct s_philo
 {
@@ -29,29 +41,25 @@ typedef struct s_philo
 	pthread_t		ph_thread;
 }	t_philo;
 
-typedef struct	s_table
+typedef struct s_table
 {
 	struct timeval	time;
-	t_forktb	*forktb;
-	t_philo		*philo;
-	int	phl;
-	time_t	tdie;
-	time_t	teat;
-	time_t	tslp;
-	time_t	neat;
-	time_t		*tz;
+	t_forktb		*forktb;
+	t_philo			*philo;
+	int				phl;
+	time_t			tdie;
+	time_t			teat;
+	time_t			tslp;
+	time_t			neat;
+	time_t			*tz;
 }	t_table;
 
-
-//void	ft_init(t_table *table, char **argv);
-//void	ft_initphilos(t_table *table);
 time_t	ft_gettime(t_table *table);
 time_t	ft_gettimephl(t_philo *table);
 int		ft_atoi(const char *nptr);
 void	ft_join(t_table *table);
 int		ft_atoi(const char *nptr);
 void	*routine(void *data);
-
 void	the_final(t_philo *philo);
 void	eating(t_philo *philo);
 void	sleeping(t_philo *philo);
