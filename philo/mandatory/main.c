@@ -1,87 +1,94 @@
 #include "philo.h"
 
-time_t	ft_gettime(t_table *table)
+void	ft_initphilos(t_table *table)
 {
-	gettimeofday(&table->time, NULL);
-	return ((table->time.tv_sec * 1000) + (table->time.tv_usec / 1000));
-}
+	int	i;
 
-time_t	ft_gettimephl(t_philo *table)
-{
-	gettimeofday(&table->time, NULL);
-	return ((table->time.tv_sec * 1000) + (table->time.tv_usec / 1000));
-}
-
-/* void	the_final(t_philo *philo)
-{
-	philo->td = ft_gettimephl(philo);
-	if (philo->td >= philo->gone + philo->die)
+	i = 0;
+	while(i < table->phl)
 	{
-		printf("\n\nPHILO %d HA MUERTO\n", philo->philo);
-		printf("%ld tiempo muerte\n\n", philo->td - philo->gone);
-		exit(1);
+		table->philo[i].philo = i;
+		table->philo[i].die = table->tdie;
+		table->philo[i].td = ft_gettime(table) + table->tdie;
+		table->philo[i].count = ft_gettime(table);
+		table->philo[i].eat = table->teat;
+		table->philo[i].slp = table->tslp;
+		table->philo[i].ms = &table->tz[0];
+		table->philo[i].fork = &table->forktb[i];
+		if (i - 1 < 0)
+			table->philo[i].fork_l = &table->forktb[table->phl - 1];
+		else
+			table->philo[i].fork_l = &table->forktb[i - 1];
+		i++;
 	}
-} */
+}
+
+void	ft_init(t_table *table, char **argv, struct timeval	time)
+{
+	int i = 0;
+
+	table->phl = ft_atoi(argv[1]);
+	table->tdie = ft_atoi(argv[2]);
+	table->teat = ft_atoi(argv[3]);
+	table->tslp = ft_atoi(argv[4]);
+	table->tz = malloc(sizeof(time_t));
+	table->tz[0] = ft_gettime(table);
+	table->philo = malloc(sizeof(t_philo) * table->phl);
+	table->forktb = malloc(sizeof(t_forktb) * table->phl);
+	if(argv[5])
+		table->neat = ft_atoi(argv[5]);
+	while(i < table->phl)
+	{
+		pthread_mutex_init(&table->forktb[i].mutex_forktb, NULL);
+		i++;
+	}
+	ft_initphilos(table);
+}
 
 void	*routine(void *data)
 {
-	t_philo *philo = (t_philo *)data;
-/* 	printf("philo %d, die %ld, eat %ld, sleep %ld tnow %ld\n",philo->philo, philo->tdie, philo->teat, philo->tslp, philo->tnow);
-	printf("su fork es el %d y el de la izquierda %d\n",philo->fork->forktb, philo->fork_l->forktb); */
-	while (1)
+	t_philo	*philo = (t_philo *)data;
+
+	while(1)
 	{
-		//usleep(2000);
-		pthread_mutex_lock(&philo->ttotal->mutex_ttotal);
-		philo->ttotal[0].ttotal = ft_gettimephl(philo) - philo->ms[0];
-		pthread_mutex_unlock(&philo->ttotal->mutex_ttotal);
+		usleep(1000);
+		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 		if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)
 		{
-			letseat(philo);
-			//usleep(500);
-			letsleep(philo);
-			//usleep(500);
+			eating(philo);
+			philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
+			sleeping(philo);
 		}
-		if (philo->fork->forktb != 0 && philo->fork_l->forktb != 0)
-			letsthink(philo);
+		letsthink(philo);
 	}
-}
-
-void	ft_join(t_table *table)
-{
-	int i = 0;
-	while (i < table->phl)
-	{
-		pthread_create(&table->philo[i].ph_thread, NULL, routine, &table->philo[i]);
-		i++;
-	}
-	i = 0;
-	while (i < table->phl)
-	{	
-		pthread_join(table->philo[i].ph_thread, NULL);
-		i++;
-	}
+	return (NULL);
 }
 
 int	main(int argc, char **argv)
 {
+	struct timeval	time;
 	t_table			table;
 	int				i;
-	time_t	temp;
+	time_t			temp;
 
-	i = 0;		//modificar muerte, añadir tiempo y pensar que mas hace falta cambiar
-	ft_init(&table, argv);
-	ft_join(&table);
-	//destruir mutex
-/* 	while(i < table.phl)	//comprobar que todos los philos tengan los valores bien
+	i = 0;
+	ft_init(&table, argv, time);
+	while (i < table.phl)
 	{
-		printf("philo %d, die %ld, eat %ld, sleep %ld tnow %ld\n",table.philo[i].philo,table.philo[i].tdie, table.philo[i].teat, table.philo[i].tslp, table.philo[i].tnow);
+		pthread_create(&table.philo[i].ph_thread, NULL, routine, &table.philo[i]);
 		i++;
-	} */
-
-	//pthread_mutex_destroy(&counter.mutex_count);
+	}
+	i = 0;
+	while (i < table.phl)
+	{	
+		pthread_join(table.philo[i].ph_thread, NULL);
+		i++;
+	}
+	i = 0;
+	while(i < table.phl)
+	{
+		pthread_mutex_init(&table.forktb[i].mutex_forktb, NULL);
+		i++;
+	}
 	return (0);
 }
-
-// 1 microsegundo / 1000 = 1 milisegundo
-// 1 segundo * 1000 = 1 milisegundo
-// usleep(unsigned long int) suspende la ejecucion d eun programa durante x microsegundos

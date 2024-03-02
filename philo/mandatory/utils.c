@@ -32,80 +32,30 @@ int	ft_atoi(const char *nptr)
 	return (0);
 }
 
-/* void	ft_initphilos(t_table *table)
+time_t	ft_gettime(t_table *table)
 {
-	int	i;
-
-	i = 0;
-	while(i < table->phl)
-	{
-		table->philo[i].philo = i;
-		table->philo[i].gone = ft_gettime(table);
-		table->philo[i].td = 0;
-		table->philo[i].die = table->tdie;
-		table->philo[i].eat = table->teat;
-		table->philo[i].slp = table->tslp;
-		table->philo[i].ms = &table->tz[0];
-		table->philo[i].cont = ft_gettime(table);
-		table->philo[i].fork = &table->forktb[i];
-		if (i - 1 < 0)
-			table->philo[i].fork_l = &table->forktb[table->phl - 1];
-		else
-			table->philo[i].fork_l = &table->forktb[i - 1];
-		//agregar numero de comidas
-		i++;
-	}
-} */
-
-
-void	ft_initphilo(t_table *table)
-{
-	int	i = 0;
-
-	while (i < table->phl)
-	{
-		table->philo[i].philo = i;
-		table->philo[i].tnow = ft_gettimephl(&table->philo[i]);
-		table->philo[i].tdie = table->tdie;
-		table->philo[i].final = table->philo[i].tnow + table->tdie;
-		table->philo[i].teat = table->teat;
-		table->philo[i].tslp = table->tslp;
-		table->philo[i].fork = &table->forktb[i];
-		table->philo[i].ms = &table->tz[0];
-		table->philo[i].ttotal = &table->ttotal[0];
-		//agregar numero de comidas
-		if (i - 1 < 0)
-			table->philo[i].fork_l = &table->forktb[table->phl - 1];
-		else
-			table->philo[i].fork_l = &table->forktb[i - 1];
-		i++;
-	}
+	gettimeofday(&table->time, NULL);
+	return ((table->time.tv_sec * 1000) + (table->time.tv_usec / 1000));
 }
 
-void	ft_init(t_table *table, char **argv)
+time_t	ft_gettimephl(t_philo *table)
 {
-	int	i;
+	gettimeofday(&table->time, NULL);
+	return ((table->time.tv_sec * 1000) + (table->time.tv_usec / 1000));
+}
 
-	i = 0;
-	table->phl = ft_atoi(argv[1]);
-	table->tdie = ft_atoi(argv[2]);
-	table->teat = ft_atoi(argv[3]);
-	table->tslp = ft_atoi(argv[4]);
-	table->philo = malloc((sizeof(t_philo) * table->phl));
-	table->forktb = malloc((sizeof(t_forktb) * table->phl));
-	table->tz[0] = ft_gettime(table);
-	while(i < table->phl)	// numera forks para debuguear
+void	ft_join(t_table *table)
+{
+	int i = 0;
+	while (i < table->phl)
 	{
-		table->forktb[i].forktb = 0;
+		pthread_create(&table->philo[i].ph_thread, NULL, routine, &table->philo[i]);
 		i++;
 	}
 	i = 0;
-	pthread_mutex_init(&table->ttotal[0].mutex_ttotal, NULL);
-	while(i < table->phl)
-	{
-		pthread_mutex_init(&table->forktb[i].mutex_forktb, NULL);
+	while (i < table->phl)
+	{	
+		pthread_join(table->philo[i].ph_thread, NULL);
 		i++;
 	}
-	ft_initphilo(table);
-	//printf("philos %d, die %ld, eat %ld, sleep %ld\n",table->phl, table->tdie, table->teat, table->tslp);
 }
