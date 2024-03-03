@@ -1,7 +1,9 @@
 #include "philo_bonus.h"
 
-void	ft_initphilos(t_table *table)
+t_philo	ft_initphilos(t_table *table, int i)
 {
+	t_philo	philo;
+
 	philo.philo = i;
 	philo.die = table->tdie;
 	if(table->neat)
@@ -12,6 +14,7 @@ void	ft_initphilos(t_table *table)
 	philo.slp = table->tslp;
 	philo.ms = &table->tz[0];
 	philo.sem_eat = table->sem_eat;
+	return (philo);
 }
 
 void	ft_init(t_table *table, char **argv)
@@ -87,17 +90,24 @@ int main(int argc, char **argv)
 	int		i;
 	int		pid;
 	t_philo	philo;
+	int		status;
 
 	if (ft_validargs(argc, argv) == 1)
 		return (1);
 	ft_init(&table, argv);
 	//creacion de hijos
+	i = 0;
 	while (i < argc)
 	{
 		pid = fork();
 		if (pid == 0)
-			routine
+		{
+			philo = ft_initphilos(&table, i);
+			//routine(&philo);
+		}
+		i++;
 	}
+	waitpid(0, &status, 0);
 	close_sem(&table);
     return (0);
 }

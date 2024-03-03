@@ -49,7 +49,7 @@ typedef struct s_table
 {
 	struct timeval	time;
 	int				forks;
-	t_philo			*philo;
+	//t_philo			*philo;
 	int				phl;
 	time_t			tdie;
 	time_t			teat;
@@ -64,7 +64,7 @@ time_t	ft_gettimephl(t_philo *table);
 int		ft_atoi(const char *nptr);
 void	ft_join(t_table *table);
 int		ft_atoi(const char *nptr);
-void	*routine(void *data);
+void	*routine(t_philo *philo);
 void	the_final(t_philo *philo);
 void	eating(t_philo *philo);
 void	sleeping(t_philo *philo);
