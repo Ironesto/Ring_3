@@ -65,6 +65,8 @@ void	*routine(void *data)
 {
 	t_philo	*philo;
 	philo = (t_philo *)data;
+
+	usleep(500);
 	while (1 && philo->neat > 0)
 	{
 		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
