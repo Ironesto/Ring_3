@@ -88,20 +88,39 @@ void	*routine(void *data)
 	return (NULL);
 }
 
+int	ft_validargs(int argc, char **argv)
+{
+	int	i;
+	int	k;
+
+	i = 0;
+	if (argc < 5 || argc > 6)
+		return (write(2, "Wrong number of arguments\n", 26), 1);
+	while (++i < argc)
+	{
+		k = 0;
+		while(argv[i][k])
+		{
+			if (argv[i][k] < '0' || argv[i][k] > '9')
+				return (write(2, "Invalid arguments\n", 18), 1);
+			k++;
+		}
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv)
 {
 	t_table	table;
 	int		i;
 
-	if (argc < 0)
+	if (ft_validargs(argc, argv) == 1)
 		return (1);
 	i = -1;
 	ft_init(&table, argv);
 	while (++i < table.phl)
-	{
 		pthread_create(&table.philo[i].ph_thread,
 			NULL, routine, &table.philo[i]);
-	}
 	i = -1;
 	while (++i < table.phl)
 		pthread_join(table.philo[i].ph_thread, NULL);
