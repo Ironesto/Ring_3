@@ -51,6 +51,12 @@ void	ft_init(t_table *table, char **argv)
 	table->tz[0] = ft_gettime(table);
 	table->philo = malloc(sizeof(t_philo) * table->phl);
 	table->forktb = malloc(sizeof(t_forktb) * table->phl);
+	while (i < table->phl)
+	{
+		table->forktb[i].forktb = 0;
+		i++;
+	}
+	i = 0;
 	if (argv[5])
 		table->neat = ft_atoi(argv[5]);
 	while (i < table->phl)
@@ -66,21 +72,21 @@ void	*routine(void *data)
 	t_philo	*philo;
 	philo = (t_philo *)data;
 
-	usleep(500);
 	while (1 && philo->neat > 0)
 	{
+		//usleep(500);
 		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 		if (philo->fork_l == NULL)
 			letsthink(philo);
 		if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)
 		{
 			eating(philo);
-			usleep(500);
+			//usleep(500);
 			philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 			sleeping(philo);
-			usleep(500);
+			//usleep(500);
 		}
-		if (philo->fork->forktb != 0 || philo->fork_l->forktb != 0)
+		if (philo->fork->forktb != 0 && philo->fork_l->forktb != 0)
 			letsthink(philo);
 		if (philo->neat)
 			philo->neat--;

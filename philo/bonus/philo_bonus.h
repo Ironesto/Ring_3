@@ -1,23 +1,17 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   philo.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: gpaez-ga <gpaez-ga@student.42malaga.com    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/02 20:11:53 by gpaez-ga          #+#    #+#             */
-/*   Updated: 2024/03/02 20:13:12 by gpaez-ga         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
-#ifndef PHILO_H
-# define PHILO_H
-
-# include <stdio.h>
-# include <stdlib.h>
 # include <sys/time.h>
-# include <unistd.h>
+# include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <semaphore.h>
 # include <pthread.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <stdio.h>
+# include <fcntl.h>
+# include <signal.h>
 
 # define BOLD	 "\033[1m"
 # define RED	 "\033[31;1m"
@@ -48,23 +42,21 @@ typedef struct s_philo
 	time_t			slp;
 	time_t			eat;
 	time_t			neat;
-	t_forktb		*fork;
-	t_forktb		*fork_l;
-	pthread_t		ph_thread;
+	sem_t			*sem_eat;
 }	t_philo;
 
 typedef struct s_table
 {
 	struct timeval	time;
-	t_forktb		*forktb;
+	int				forks;
 	t_philo			*philo;
 	int				phl;
-	int				forks;
 	time_t			tdie;
 	time_t			teat;
 	time_t			tslp;
 	time_t			neat;
 	time_t			*tz;
+	sem_t			*sem_eat;
 }	t_table;
 
 time_t	ft_gettime(t_table *table);
