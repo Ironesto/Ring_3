@@ -30,16 +30,12 @@ void	eating(t_philo *philo)
 	pthread_mutex_lock(&philo->fork_l->mutex_forktb);
 	philo->fork->forktb = 1;
 	philo->fork_l->forktb = 1;
-	printf("%s%ld tmls %sphilo %d%s comiendo%s\n",YELLOW, philo->ttotal, GREEN, philo->philo, BLUE, RESET);
+	printf("%s%ld tmls %sphilo %d%s comiendo%s\n",YELLOW,
+		philo->ttotal, GREEN, philo->philo, BLUE, RESET);
 	philo->td = philo->count + philo->die;
 	while (philo->count < temp)
 	{
 		philo->count = ft_gettimephl(philo);
-		if (philo->count >= philo->td)
-		{
-			printf(" comida %ld contador %ld y td %ld", temp, philo->count, philo->td);
-			printf("\nvalor al entrar x en philo %d\n", philo->philo);
-		}
 		the_final(philo);
 	}
 	philo->fork->forktb = 0;
@@ -53,15 +49,11 @@ void	sleeping(t_philo *philo)
 	time_t	temp;
 
 	temp = philo->count + philo->slp;
-	printf("%s%ld tmls %sphilo %d%s durmiendo%s\n",YELLOW, philo->ttotal, GREEN, philo->philo, MAGENTA, RESET);
+	printf("%s%ld tmls %sphilo %d%s durmiendo%s\n",YELLOW,
+		philo->ttotal, GREEN, philo->philo, MAGENTA, RESET);
 	while (philo->count < temp)
 	{
 		philo->count = ft_gettimephl(philo);
-		if (philo->count >= philo->td)
-		{
-			printf("durmiendo %ld contador %ld y td %ld", temp, philo->count, philo->td);
-			printf("\nvalor al entrar x en philo %d\n", philo->philo);
-		}
 		the_final(philo);
 	}
 }
@@ -69,15 +61,16 @@ void	sleeping(t_philo *philo)
 void	letsthink(t_philo *philo)
 {
 	philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
-	printf("%s%ld tmls %sphilo %d%s pensando\n",YELLOW, philo->ttotal, GREEN, philo->philo, RESET);
+	printf("%s%ld tmls %sphilo %d%s pensando\n",YELLOW,
+		philo->ttotal, GREEN, philo->philo, RESET);
+	while (philo->fork_l == NULL)
+	{
+		philo->count = ft_gettimephl(philo);
+		the_final(philo);
+	}
 	while (philo->fork->forktb != 0 || philo->fork_l->forktb != 0)
 	{
 		philo->count = ft_gettimephl(philo);
-		if (philo->count >= philo->td)
-		{
-			printf("\npensando  contador %ld y td %ld", philo->count, philo->td);
-			printf("\nvalor al entrar x en philo %d\n", philo->philo);
-		}
 		the_final(philo);
 	}
 }

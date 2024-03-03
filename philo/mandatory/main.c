@@ -15,19 +15,22 @@
 void	ft_initphilos(t_table *table)
 {
 	int	i;
-
 	i = 0;
 	while (i < table->phl)
 	{
 		table->philo[i].philo = i;
 		table->philo[i].die = table->tdie;
+		if(table->neat)
+			table->philo[i].neat = table->neat;
 		table->philo[i].td = ft_gettime(table) + table->tdie;
 		table->philo[i].count = ft_gettime(table);
 		table->philo[i].eat = table->teat;
 		table->philo[i].slp = table->tslp;
 		table->philo[i].ms = &table->tz[0];
 		table->philo[i].fork = &table->forktb[i];
-		if (i - 1 < 0)
+		if (table->phl == 1)
+			table->philo[0].fork_l = NULL;
+		else if (i - 1 < 0)
 			table->philo[i].fork_l = &table->forktb[table->phl - 1];
 		else
 			table->philo[i].fork_l = &table->forktb[i - 1];
@@ -61,12 +64,12 @@ void	ft_init(t_table *table, char **argv)
 void	*routine(void *data)
 {
 	t_philo	*philo;
-
 	philo = (t_philo *)data;
-	while (1)
+	while (1 && philo->neat > 0)
 	{
-		//usleep(500);
 		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
+		if (philo->fork_l == NULL)
+			letsthink(philo);
 		if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)
 		{
 			eating(philo);
@@ -77,6 +80,8 @@ void	*routine(void *data)
 		}
 		if (philo->fork->forktb != 0 || philo->fork_l->forktb != 0)
 			letsthink(philo);
+		if (philo->neat)
+			philo->neat--;
 	}
 	return (NULL);
 }
@@ -95,17 +100,11 @@ int	main(int argc, char **argv)
 		pthread_create(&table.philo[i].ph_thread,
 			NULL, routine, &table.philo[i]);
 	}
-	i = 0;
-	while (i < table.phl)
-	{
+	i = -1;
+	while (++i < table.phl)
 		pthread_join(table.philo[i].ph_thread, NULL);
-		i++;
-	}
-	i = 0;
-	while (i < table.phl)
-	{
+	i = -1;
+	while (++i < table.phl)
 		pthread_mutex_destroy(&table.forktb[i].mutex_forktb);
-		i++;
-	}
 	return (0);
 }

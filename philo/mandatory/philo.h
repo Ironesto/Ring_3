@@ -47,6 +47,7 @@ typedef struct s_philo
 	time_t			die;
 	time_t			slp;
 	time_t			eat;
+	time_t			neat;
 	t_forktb		*fork;
 	t_forktb		*fork_l;
 	pthread_t		ph_thread;
