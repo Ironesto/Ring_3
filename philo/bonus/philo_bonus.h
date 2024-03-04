@@ -43,6 +43,7 @@ typedef struct s_philo
 	time_t			eat;
 	time_t			neat;
 	sem_t			*sem_eat;
+	pthread_t		ph_thread;
 }	t_philo;
 
 typedef struct s_table
@@ -64,7 +65,7 @@ time_t	ft_gettimephl(t_philo *table);
 int		ft_atoi(const char *nptr);
 void	ft_join(t_table *table);
 int		ft_atoi(const char *nptr);
-void	*routine(t_philo *philo);
+int		routine(t_philo *philo);
 void	the_final(t_philo *philo);
 void	eating(t_philo *philo);
 void	sleeping(t_philo *philo);

@@ -14,22 +14,24 @@ void	eating(t_philo *philo)
 	time_t	temp;
 
 	temp = philo->count + philo->eat;
+	printf("%s%ld tmls %sphilo %d%s pensando\n",CYAN,
+		philo->ttotal, GREEN, philo->philo, RESET);
 	sem_wait(philo->sem_eat);
-	printf("%s%ld tmls %sphilo %d%s comiendo%s\n",YELLOW,
+	philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
+	printf("%s%ld tmls %sphilo %d%s comiendo%s\n",CYAN,
 		philo->ttotal, GREEN, philo->philo, BLUE, RESET);
 	philo->td = philo->count + philo->die;
 	while (philo->count < temp)
 	{
-		philo->count = ft_gettimephl(philo);
-		usleep(2000);
-		if (philo->count >= philo->td)
-			puts("comiendo");
-		the_final(philo);
+		//philo->count = ft_gettimephl(philo);
+		//usleep(2000);
+/* 		if (philo->count >= philo->td)
+			puts("comiendo"); */
+		//the_final(philo);
+		//printf("hijo %d contador %ld y temp %ld\n",philo->philo, philo->count, temp);
+		usleep(1000);
 	}
-	//philo->fork->forktb = 0;
-	//philo->fork_l->forktb = 0;
-	//pthread_mutex_unlock(&philo->fork->mutex_forktb);
-	//pthread_mutex_unlock(&philo->fork_l->mutex_forktb);
+	sem_post(philo->sem_eat);
 }
 
 void	sleeping(t_philo *philo)
@@ -37,34 +39,28 @@ void	sleeping(t_philo *philo)
 	time_t	temp;
 
 	temp = philo->count + philo->slp;
-	printf("%s%ld tmls %sphilo %d%s durmiendo%s\n",YELLOW,
+	philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
+	printf("%s%ld tmls %sphilo %d%s durmiendo%s\n",CYAN,
 		philo->ttotal, GREEN, philo->philo, MAGENTA, RESET);
 	while (philo->count < temp)
 	{
-		philo->count = ft_gettimephl(philo);
-		usleep(2000);
-		if (philo->count >= philo->td)
-			puts("durmiendo");
-		the_final(philo);
+/* 		if (philo->count >= philo->td)
+			puts("durmiendo"); */
+		usleep(1000);
 	}
 }
 
-void	letsthink(t_philo *philo)
+/* void	letsthink(t_philo *philo)
 {
 	philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
-	printf("%s%ld tmls %sphilo %d%s pensando\n",YELLOW,
+	printf("%s%ld tmls %sphilo %d%s pensando\n",CYAN,
 		philo->ttotal, GREEN, philo->philo, RESET);
-	while (philo->sem_eat == 0)
-	{
-		philo->count = ft_gettimephl(philo);
-		the_final(philo);
-	}
-	while (philo->sem_eat == 0)
-	{
-		philo->count = ft_gettimephl(philo);
+	//while (philo->sem_eat == 0)
+	//{
+		//philo->count = ft_gettimephl(philo);
 		usleep(2000);
 		if (philo->count >= philo->td)
 			puts("pensando");
 		the_final(philo);
-	}
-}
+	//}
+} */

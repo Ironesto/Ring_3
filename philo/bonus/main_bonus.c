@@ -26,35 +26,48 @@ void	ft_init(t_table *table, char **argv)
 	table->tslp = ft_atoi(argv[4]);
 	table->tz = malloc(sizeof(time_t));
 	table->tz[0] = ft_gettime(table);
-	table->sem_eat = sem_open("/forks", O_CREAT, 0644, table->phl / 2);
-    table->forks = table->phl;
+    table->forks = table->phl / 2;
+	table->sem_eat = sem_open("/forks", O_CREAT, 0644, table->forks);
 	if (argv[5])
 		table->neat = ft_atoi(argv[5]);
 	//ft_initphilos(table);
 }
 
-void	*routine(t_philo *philo)
+void	*ft_compdead(void *data)
+{
+	t_philo	*philo;
+	philo = (t_philo *)data;
+	
+	while (philo->count < philo->td)
+	{
+		usleep(5000);
+		philo->count = ft_gettimephl(philo);
+		the_final(philo);
+	}
+	return (NULL);
+}
+
+int	routine(t_philo *philo)
 {
 	while (1 && philo->neat > 0)
 	{
-		//usleep(500);
+		pthread_create(&philo->ph_thread,
+			NULL, ft_compdead, philo);
 		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
-		if (philo->sem_eat == 0)
-			letsthink(philo);
-		if (philo->sem_eat)
-		{
+		//if (philo->sem_eat == 0)
+		//	letsthink(philo);
+/* 		if (philo->sem_eat)
+		{ */
 			eating(philo);
-			//usleep(500);
+			if (philo->neat)
+				philo->neat--;
 			philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 			sleeping(philo);
-			//usleep(500);
-		}
-		if (philo->sem_eat == 0)
-			letsthink(philo);
-		if (philo->neat)
-			philo->neat--;
+	//	}
+		//if (philo->sem_eat == 0)
+		//letsthink(philo);
 	}
-	return (NULL);
+	return (1);
 }
 
 int	ft_validargs(int argc, char **argv)
@@ -95,19 +108,22 @@ int main(int argc, char **argv)
 	if (ft_validargs(argc, argv) == 1)
 		return (1);
 	ft_init(&table, argv);
-	//creacion de hijos
 	i = 0;
-	while (i < argc)
+	while (i < table.phl)
 	{
 		pid = fork();
+		puts("crea un hujo");
 		if (pid == 0)
 		{
+			printf("hijo nº %d\n", i);
 			philo = ft_initphilos(&table, i);
-			//routine(&philo);
+			routine(&philo);
+			break ;
 		}
 		i++;
 	}
-	waitpid(0, &status, 0);
+	printf("statsu %d\n", waitpid(0, &status, 0));
+	killall();
 	close_sem(&table);
     return (0);
 }

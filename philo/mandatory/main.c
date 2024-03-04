@@ -74,22 +74,19 @@ void	*routine(void *data)
 
 	while (1 && philo->neat > 0)
 	{
-		//usleep(500);
 		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 		if (philo->fork_l == NULL)
 			letsthink(philo);
 		if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)
 		{
 			eating(philo);
-			//usleep(500);
+			if (philo->neat)
+				philo->neat--;
 			philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 			sleeping(philo);
-			//usleep(500);
 		}
 		if (philo->fork->forktb != 0 && philo->fork_l->forktb != 0)
 			letsthink(philo);
-		if (philo->neat)
-			philo->neat--;
 	}
 	return (NULL);
 }
