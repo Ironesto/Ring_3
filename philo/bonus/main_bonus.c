@@ -5,6 +5,7 @@ t_philo	ft_initphilos(t_table *table, int i)
 	t_philo	philo;
 
 	philo.philo = i;
+	philo.isdead = 0;
 	philo.die = table->tdie;
 	if(table->neat)
 		philo.neat = table->neat;
@@ -12,7 +13,7 @@ t_philo	ft_initphilos(t_table *table, int i)
 	philo.count = ft_gettime(table);
 	philo.eat = table->teat;
 	philo.slp = table->tslp;
-	philo.ms = &table->tz[0];
+	philo.ms = ft_gettime(table);
 	philo.sem_eat = table->sem_eat;
 	return (philo);
 }
@@ -25,6 +26,7 @@ void	ft_init(t_table *table, char **argv)
 	table->teat = ft_atoi(argv[3]);
 	table->tslp = ft_atoi(argv[4]);
 	table->tz = malloc(sizeof(time_t));
+	table->philo = malloc(sizeof(int) * table->phl);
 	table->tz[0] = ft_gettime(table);
     table->forks = table->phl / 2;
 	table->sem_eat = sem_open("/forks", O_CREAT, 0644, table->forks);
@@ -40,7 +42,7 @@ void	*ft_compdead(void *data)
 	
 	while (philo->count < philo->td)
 	{
-		usleep(5000);
+		usleep(1000);
 		philo->count = ft_gettimephl(philo);
 		the_final(philo);
 	}
@@ -53,21 +55,16 @@ int	routine(t_philo *philo)
 	{
 		pthread_create(&philo->ph_thread,
 			NULL, ft_compdead, philo);
-		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
-		//if (philo->sem_eat == 0)
-		//	letsthink(philo);
-/* 		if (philo->sem_eat)
-		{ */
-			eating(philo);
-			if (philo->neat)
-				philo->neat--;
-			philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
-			sleeping(philo);
-	//	}
-		//if (philo->sem_eat == 0)
-		//letsthink(philo);
+		philo->ttotal = ft_gettimephl(philo) - philo->ms;
+		eating(philo);
+		if (philo->neat)
+			philo->neat--;
+		if (philo->neat == 0)
+			break ;
+		philo->ttotal = ft_gettimephl(philo) - philo->ms;
+		sleeping(philo);
 	}
-	return (1);
+	return (0);
 }
 
 int	ft_validargs(int argc, char **argv)
@@ -101,7 +98,6 @@ int main(int argc, char **argv)
 {
 	t_table	table;
 	int		i;
-	int		pid;
 	t_philo	philo;
 	int		status;
 
@@ -111,19 +107,22 @@ int main(int argc, char **argv)
 	i = 0;
 	while (i < table.phl)
 	{
-		pid = fork();
-		puts("crea un hujo");
-		if (pid == 0)
+		table.philo[i] = fork();
+		if (table.philo[i] == 0)
 		{
-			printf("hijo nº %d\n", i);
 			philo = ft_initphilos(&table, i);
 			routine(&philo);
 			break ;
 		}
 		i++;
 	}
-	printf("statsu %d\n", waitpid(0, &status, 0));
-	killall();
+	i = 0;
+	if (waitpid(0, &status, 0) > 0)
+		while (i < table.phl)
+		{
+			kill(table.philo[i], 9);
+			i++;
+		}
 	close_sem(&table);
     return (0);
 }

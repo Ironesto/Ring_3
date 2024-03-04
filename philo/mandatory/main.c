@@ -82,6 +82,8 @@ void	*routine(void *data)
 			eating(philo);
 			if (philo->neat)
 				philo->neat--;
+			if (philo->neat == 0)
+				break ;
 			philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 			sleeping(philo);
 		}

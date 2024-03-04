@@ -34,8 +34,9 @@ typedef struct s_philo
 {
 	struct timeval	time;
 	int				philo;
+	int				isdead;
 	time_t			ttotal;
-	time_t			*ms;
+	time_t			ms;
 	time_t			td;
 	time_t			count;
 	time_t			die;
@@ -50,7 +51,7 @@ typedef struct s_table
 {
 	struct timeval	time;
 	int				forks;
-	//t_philo			*philo;
+	int				*philo;
 	int				phl;
 	time_t			tdie;
 	time_t			teat;
