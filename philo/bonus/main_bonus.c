@@ -12,6 +12,11 @@
 
 #include "philo_bonus.h"
 
+void	ft_leaks(void)
+{
+	system("leaks -q philo");
+}
+
 t_philo	ft_initphilos(t_table *table, int i)
 {
 	t_philo	philo;
@@ -87,6 +92,7 @@ int	main(int argc, char **argv)
 	int		i;
 	t_philo	philo;
 
+	//atexit(ft_leaks);
 	if (ft_validargs(argc, argv) == 1)
 		return (1);
 	ft_init(&table, argv);

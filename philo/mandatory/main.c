@@ -12,6 +12,11 @@
 
 #include "philo.h"
 
+void	ft_leaks(void)
+{
+	system("leaks -q philo");
+}
+
 void	ft_initphilos(t_table *table)
 {
 	int	i;
@@ -101,11 +106,15 @@ int	main(int argc, char **argv)
 {
 	t_table	table;
 	int		i;
+	atexit(ft_leaks);
 
 	if (ft_validargs(argc, argv) == 1)
 		return (1);
 	i = -1;
 	ft_init(&table, argv);
 	ft_create(&table);
+	free(table.tz);
+	free(table.philo);
+	free(table.forktb);
 	return (0);
 }

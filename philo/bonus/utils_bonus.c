@@ -71,5 +71,8 @@ void	close_sem(t_table *table)
 		}
 	}
 	sem_unlink("/forks");
+	usleep(500);
 	sem_close(table->sem_eat);
+	free(table->tz);
+	free(table->philo);
 }

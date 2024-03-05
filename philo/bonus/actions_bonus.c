@@ -17,7 +17,7 @@ void	the_final(t_philo *philo)
 	if (philo->count >= philo->td)
 	{
 		philo->isdead = 1;
-		printf("\n%sPHILO %d HA MUERTO%s\n", RED, philo->philo, RESET);
+		printf("\n%sPHILO %d HA MUERTO %ld ms%s\n", RED, philo->philo, philo->ttotal, RESET);
 		exit(1);
 	}
 }
