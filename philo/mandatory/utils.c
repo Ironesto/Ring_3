@@ -55,3 +55,24 @@ time_t	ft_gettimephl(t_philo *table)
 	gettimeofday(&table->time, NULL);
 	return ((table->time.tv_sec * 1000) + (table->time.tv_usec / 1000));
 }
+
+int	ft_validargs(int argc, char **argv)
+{
+	int	i;
+	int	k;
+
+	i = 0;
+	if (argc < 5 || argc > 6)
+		return (write(2, "Wrong number of arguments\n", 26), 1);
+	while (++i < argc)
+	{
+		k = 0;
+		while (argv[i][k])
+		{
+			if (argv[i][k] < '0' || argv[i][k] > '9')
+				return (write(2, "Invalid arguments\n", 18), 1);
+			k++;
+		}
+	}
+	return (0);
+}

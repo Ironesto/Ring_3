@@ -15,13 +15,13 @@
 void	ft_initphilos(t_table *table)
 {
 	int	i;
+
 	i = 0;
 	while (i < table->phl)
 	{
 		table->philo[i].philo = i;
 		table->philo[i].die = table->tdie;
-		if(table->neat)
-			table->philo[i].neat = table->neat;
+		table->philo[i].neat = table->neat;
 		table->philo[i].td = ft_gettime(table) + table->tdie;
 		table->philo[i].count = ft_gettime(table);
 		table->philo[i].eat = table->teat;
@@ -56,62 +56,45 @@ void	ft_init(t_table *table, char **argv)
 		table->forktb[i].forktb = 0;
 		i++;
 	}
-	i = 0;
-	if (argv[5])
+	i = -1;
+	if (argv[5] != NULL)
 		table->neat = ft_atoi(argv[5]);
-	while (i < table->phl)
-	{
+	else
+		table->neat = -1;
+	while (++i < table->phl)
 		pthread_mutex_init(&table->forktb[i].mutex_forktb, NULL);
-		i++;
-	}
 	ft_initphilos(table);
 }
 
-void	*routine(void *data)
+int	ft_haveforks(t_philo *philo)
 {
-	t_philo	*philo;
-	philo = (t_philo *)data;
-
-	while (1 && philo->neat > 0)
-	{
-		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
-		if (philo->fork_l == NULL)
-			letsthink(philo);
-		if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)
-		{
-			eating(philo);
-			if (philo->neat)
-				philo->neat--;
-			if (philo->neat == 0)
-				break ;
-			philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
-			sleeping(philo);
-		}
-		if (philo->fork->forktb != 0 && philo->fork_l->forktb != 0)
-			letsthink(philo);
-	}
-	return (NULL);
+	eating(philo);
+	if (philo->neat > 0)
+		philo->neat--;
+	if (philo->neat == 0)
+		return (1);
+	philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
+	sleeping(philo);
+	return (0);
 }
 
-int	ft_validargs(int argc, char **argv)
+void	ft_create(t_table *table)
 {
 	int	i;
-	int	k;
 
 	i = 0;
-	if (argc < 5 || argc > 6)
-		return (write(2, "Wrong number of arguments\n", 26), 1);
-	while (++i < argc)
+	while (++i < table->phl)
 	{
-		k = 0;
-		while(argv[i][k])
-		{
-			if (argv[i][k] < '0' || argv[i][k] > '9')
-				return (write(2, "Invalid arguments\n", 18), 1);
-			k++;
-		}
+		usleep(500);
+		pthread_create(&table->philo[i].ph_thread,
+			NULL, routine, &table->philo[i]);
 	}
-	return (0);
+	i = -1;
+	while (++i < table->phl)
+		pthread_join(table->philo[i].ph_thread, NULL);
+	i = -1;
+	while (++i < table->phl)
+		pthread_mutex_destroy(&table->forktb[i].mutex_forktb);
 }
 
 int	main(int argc, char **argv)
@@ -123,14 +106,6 @@ int	main(int argc, char **argv)
 		return (1);
 	i = -1;
 	ft_init(&table, argv);
-	while (++i < table.phl)
-		pthread_create(&table.philo[i].ph_thread,
-			NULL, routine, &table.philo[i]);
-	i = -1;
-	while (++i < table.phl)
-		pthread_join(table.philo[i].ph_thread, NULL);
-	i = -1;
-	while (++i < table.phl)
-		pthread_mutex_destroy(&table.forktb[i].mutex_forktb);
+	ft_create(&table);
 	return (0);
 }

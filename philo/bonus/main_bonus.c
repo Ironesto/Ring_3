@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gpaez-ga <gpaez-ga@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/04 17:07:16 by gpaez-ga          #+#    #+#             */
+/*   Updated: 2024/03/04 17:07:16 by gpaez-ga         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo_bonus.h"
 
 t_philo	ft_initphilos(t_table *table, int i)
@@ -7,7 +19,7 @@ t_philo	ft_initphilos(t_table *table, int i)
 	philo.philo = i;
 	philo.isdead = 0;
 	philo.die = table->tdie;
-	if(table->neat)
+	if (table->neat)
 		philo.neat = table->neat;
 	philo.td = ft_gettime(table) + table->tdie;
 	philo.count = ft_gettime(table);
@@ -28,18 +40,17 @@ void	ft_init(t_table *table, char **argv)
 	table->tz = malloc(sizeof(time_t));
 	table->philo = malloc(sizeof(int) * table->phl);
 	table->tz[0] = ft_gettime(table);
-    table->forks = table->phl / 2;
+	table->forks = table->phl / 2;
 	table->sem_eat = sem_open("/forks", O_CREAT, 0644, table->forks);
 	if (argv[5])
 		table->neat = ft_atoi(argv[5]);
-	//ft_initphilos(table);
 }
 
 void	*ft_compdead(void *data)
 {
 	t_philo	*philo;
+
 	philo = (t_philo *)data;
-	
 	while (philo->count < philo->td)
 	{
 		usleep(1000);
@@ -47,24 +58,6 @@ void	*ft_compdead(void *data)
 		the_final(philo);
 	}
 	return (NULL);
-}
-
-int	routine(t_philo *philo)
-{
-	while (1 && philo->neat > 0)
-	{
-		pthread_create(&philo->ph_thread,
-			NULL, ft_compdead, philo);
-		philo->ttotal = ft_gettimephl(philo) - philo->ms;
-		eating(philo);
-		if (philo->neat)
-			philo->neat--;
-		if (philo->neat == 0)
-			break ;
-		philo->ttotal = ft_gettimephl(philo) - philo->ms;
-		sleeping(philo);
-	}
-	return (0);
 }
 
 int	ft_validargs(int argc, char **argv)
@@ -78,7 +71,7 @@ int	ft_validargs(int argc, char **argv)
 	while (++i < argc)
 	{
 		k = 0;
-		while(argv[i][k])
+		while (argv[i][k])
 		{
 			if (argv[i][k] < '0' || argv[i][k] > '9')
 				return (write(2, "Invalid arguments\n", 18), 1);
@@ -88,18 +81,11 @@ int	ft_validargs(int argc, char **argv)
 	return (0);
 }
 
-void	close_sem(t_table *table)
-{
-	sem_unlink("/forks");
-	sem_close(table->sem_eat);
-}
-
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
 	t_table	table;
 	int		i;
 	t_philo	philo;
-	int		status;
 
 	if (ft_validargs(argc, argv) == 1)
 		return (1);
@@ -116,13 +102,6 @@ int main(int argc, char **argv)
 		}
 		i++;
 	}
-	i = 0;
-	if (waitpid(0, &status, 0) > 0)
-		while (i < table.phl)
-		{
-			kill(table.philo[i], 9);
-			i++;
-		}
 	close_sem(&table);
-    return (0);
+	return (0);
 }

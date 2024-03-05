@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   actions_bonus.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gpaez-ga <gpaez-ga@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/04 17:06:06 by gpaez-ga          #+#    #+#             */
+/*   Updated: 2024/03/04 17:06:06 by gpaez-ga         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo_bonus.h"
 
 void	the_final(t_philo *philo)
@@ -15,25 +27,17 @@ void	eating(t_philo *philo)
 	time_t	temp;
 
 	if (philo->isdead == 0)
-		printf("%s%ld tmls %sphilo %d%s pensando\n",CYAN,
+		printf("%s%ld tmls %sphilo %d%s pensando\n", CYAN,
 			philo->ttotal, GREEN, philo->philo, RESET);
 	sem_wait(philo->sem_eat);
 	philo->ttotal = ft_gettimephl(philo) - philo->ms;
 	if (philo->isdead == 0)
-		printf("%s%ld tmls %sphilo %d%s comiendo%s\n",CYAN,
+		printf("%s%ld tmls %sphilo %d%s comiendo%s\n", CYAN,
 			philo->ttotal, GREEN, philo->philo, BLUE, RESET);
 	philo->td = philo->count + philo->die;
 	temp = philo->count + philo->eat;
-	//printf("comiendo philo %d count es %ld temp es %ld\n", philo->philo, philo->count, temp);
 	while (philo->count < temp)
 	{
-		//philo->count = ft_gettimephl(philo);
-		//usleep(2000);
-/* 		if (philo->count >= philo->td)
-			puts("comiendo"); */
-		//the_final(philo);
-		//printf("hijo %d contador %ld y temp %ld\n",philo->philo, philo->count, temp);
-		//usleep(1000);
 	}
 	sem_post(philo->sem_eat);
 }
@@ -45,8 +49,27 @@ void	sleeping(t_philo *philo)
 	temp = philo->count + philo->slp;
 	philo->ttotal = ft_gettimephl(philo) - philo->ms;
 	if (philo->isdead == 0)
-		printf("%s%ld tmls %sphilo %d%s durmiendo%s\n",CYAN,
+		printf("%s%ld tmls %sphilo %d%s durmiendo%s\n", CYAN,
 			philo->ttotal, GREEN, philo->philo, MAGENTA, RESET);
 	while (philo->count < temp)
-	{}
+	{
+	}
+}
+
+int	routine(t_philo *philo)
+{
+	while (1 && philo->neat > 0)
+	{
+		pthread_create(&philo->ph_thread,
+			NULL, ft_compdead, philo);
+		philo->ttotal = ft_gettimephl(philo) - philo->ms;
+		eating(philo);
+		if (philo->neat)
+			philo->neat--;
+		if (philo->neat == 0)
+			break ;
+		philo->ttotal = ft_gettimephl(philo) - philo->ms;
+		sleeping(philo);
+	}
+	return (0);
 }

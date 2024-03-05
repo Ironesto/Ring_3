@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_bonus.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gpaez-ga <gpaez-ga@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/04 17:05:22 by gpaez-ga          #+#    #+#             */
+/*   Updated: 2024/03/04 17:05:22 by gpaez-ga         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo_bonus.h"
 
 static int	ft_putnbr_atoi(const char *str, int i)
@@ -42,4 +54,22 @@ time_t	ft_gettimephl(t_philo *table)
 {
 	gettimeofday(&table->time, NULL);
 	return ((table->time.tv_sec * 1000) + (table->time.tv_usec / 1000));
+}
+
+void	close_sem(t_table *table)
+{
+	int	i;
+	int	status;
+
+	i = 0;
+	if (waitpid(0, &status, 0) > 0)
+	{
+		while (i < table->phl)
+		{
+			kill(table->philo[i], 9);
+			i++;
+		}
+	}
+	sem_unlink("/forks");
+	sem_close(table->sem_eat);
 }
