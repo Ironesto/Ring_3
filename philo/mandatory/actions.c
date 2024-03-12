@@ -12,17 +12,22 @@
 
 #include "philo.h"
 
-void	the_final(t_philo *philo)
+int	the_final(t_philo *philo)
 {
+	if (philo->sd[0] == 1)
+		return (1);
 	if (philo->count >= philo->td)
 	{
-		printf("\n%sPHILO %d HA MUERTO %ld ms%s\n",
-			RED, philo->philo, philo->ttotal, RESET);
-		exit(1);
+		philo->sd[0] = 1;
+		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
+		printf("%s%ld %d DIED%s\n",
+			RED, philo->ttotal, philo->philo, RESET);
+		return (1);
 	}
+	return (0);
 }
 
-void	eating(t_philo *philo)
+int	eating(t_philo *philo)
 {
 	time_t	temp;
 
@@ -31,58 +36,64 @@ void	eating(t_philo *philo)
 	pthread_mutex_lock(&philo->fork_l->mutex_forktb);
 	philo->fork->forktb = 1;
 	philo->fork_l->forktb = 1;
-	printf("%s%ld tmls %sphilo %d%s comiendo%s\n", YELLOW,
+	printf("%s%ld %s%d%s has taken a fork%s\n", YELLOW,
+		philo->ttotal, GREEN, philo->philo, CYAN, RESET);
+	printf("%s%ld %s%d%s has taken a fork%s\n", YELLOW,
+		philo->ttotal, GREEN, philo->philo, CYAN, RESET);
+	printf("%s%ld %s%d%s is eating%s\n", YELLOW,
 		philo->ttotal, GREEN, philo->philo, BLUE, RESET);
 	philo->td = philo->count + philo->die;
 	while (philo->count < temp)
 	{
 		philo->count = ft_gettimephl(philo);
-		usleep(1000);
-		if (philo->count >= philo->td)
-			puts("comiendo");
-		the_final(philo);
+		usleep(500);
+		if (the_final(philo) == 1)
+			return (1);
 	}
 	philo->fork->forktb = 0;
 	philo->fork_l->forktb = 0;
 	pthread_mutex_unlock(&philo->fork->mutex_forktb);
 	pthread_mutex_unlock(&philo->fork_l->mutex_forktb);
+	return (0);
 }
 
-void	sleeping(t_philo *philo)
+int	sleeping(t_philo *philo)
 {
 	time_t	temp;
 
 	temp = philo->count + philo->slp;
-	printf("%s%ld tmls %sphilo %d%s durmiendo%s\n", YELLOW,
+	printf("%s%ld %s%d%s is sleeping%s\n", YELLOW,
 		philo->ttotal, GREEN, philo->philo, MAGENTA, RESET);
 	while (philo->count < temp)
 	{
 		philo->count = ft_gettimephl(philo);
-		usleep(1000);
-		if (philo->count >= philo->td)
-			puts("durmiendo");
-		the_final(philo);
+		usleep(500);
+		if (the_final(philo) == 1)
+			return (1);
 	}
+	return (0);
 }
 
-void	letsthink(t_philo *philo)
+int	letsthink(t_philo *philo)
 {
 	philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
-	printf("%s%ld tmls %sphilo %d%s pensando\n", YELLOW,
+	printf("%s%ld %s%d%s is thinking\n", YELLOW,
 		philo->ttotal, GREEN, philo->philo, RESET);
 	while (philo->fork_l == NULL)
 	{
+		usleep(500);
 		philo->count = ft_gettimephl(philo);
-		the_final(philo);
+		if (the_final(philo) == 1)
+			return (1);
 	}
 	while (philo->fork->forktb != 0 || philo->fork_l->forktb != 0)
 	{
 		philo->count = ft_gettimephl(philo);
-		usleep(1000);
-		if (philo->count >= philo->td)
-			puts("pensando");
-		the_final(philo);
+		usleep(500);
+		if (the_final(philo) == 1)
+			return (1);
 	}
+	return (0);
 }
 
 void	*routine(void *data)
@@ -94,13 +105,16 @@ void	*routine(void *data)
 	{
 		philo->ttotal = ft_gettimephl(philo) - philo->ms[0];
 		if (philo->fork_l == NULL)
-			letsthink(philo);
+			if (letsthink(philo) == 1)
+				return (NULL);
 		if (philo->fork->forktb == 0 && philo->fork_l->forktb == 0)
 		{
-			ft_haveforks(philo);
+			if (ft_haveforks(philo) == 1)
+				return (NULL);
 		}
 		if (philo->fork->forktb != 0 || philo->fork_l->forktb != 0)
-			letsthink(philo);
+			if (letsthink(philo) == 1)
+				return (NULL);
 	}
 	return (NULL);
 }

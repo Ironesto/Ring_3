@@ -40,6 +40,7 @@ typedef struct s_philo
 {
 	struct timeval	time;
 	int				philo;
+	int				*sd;
 	time_t			ttotal;
 	time_t			*ms;
 	time_t			td;
@@ -59,6 +60,7 @@ typedef struct s_table
 	t_forktb		*forktb;
 	t_philo			*philo;
 	int				phl;
+	int				*isdead;
 	int				forks;
 	time_t			tdie;
 	time_t			teat;
@@ -75,8 +77,8 @@ int		ft_atoi(const char *nptr);
 int		ft_validargs(int argc, char **argv);
 void	*routine(void *data);
 int		ft_haveforks(t_philo *philo);
-void	the_final(t_philo *philo);
-void	eating(t_philo *philo);
-void	sleeping(t_philo *philo);
-void	letsthink(t_philo *philo);
+int		the_final(t_philo *philo);
+int		eating(t_philo *philo);
+int		sleeping(t_philo *philo);
+int		letsthink(t_philo *philo);
 #endif
