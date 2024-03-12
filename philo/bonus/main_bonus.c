@@ -60,7 +60,8 @@ void	*ft_compdead(void *data)
 	{
 		usleep(1000);
 		philo->count = ft_gettimephl(philo);
-		the_final(philo);
+		if (the_final(philo) == 1)
+			return (NULL);
 	}
 	return (NULL);
 }

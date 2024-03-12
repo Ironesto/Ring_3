@@ -79,7 +79,7 @@ int		ft_atoi(const char *nptr);
 void	ft_join(t_table *table);
 int		ft_atoi(const char *nptr);
 int		routine(t_philo *philo);
-void	the_final(t_philo *philo);
+int		the_final(t_philo *philo);
 void	eating(t_philo *philo);
 void	sleeping(t_philo *philo);
 void	letsthink(t_philo *philo);
