@@ -12,10 +12,10 @@
 
 #include "philo.h"
 
-void	ft_leaks(void)
+/* void	ft_leaks(void)
 {
 	system("leaks -q philo");
-}
+} */
 
 void	ft_initphilos(t_table *table)
 {
@@ -46,9 +46,6 @@ void	ft_initphilos(t_table *table)
 
 void	ft_init(t_table *table, char **argv)
 {
-	int	i;
-
-	i = 0;
 	table->phl = ft_atoi(argv[1]);
 	table->isdead = malloc(sizeof(int));
 	table->isdead[0] = 0;
@@ -59,18 +56,7 @@ void	ft_init(t_table *table, char **argv)
 	table->tz[0] = ft_gettime(table);
 	table->philo = malloc(sizeof(t_philo) * table->phl);
 	table->forktb = malloc(sizeof(t_forktb) * table->phl);
-	while (i < table->phl)
-	{
-		table->forktb[i].forktb = 0;
-		i++;
-	}
-	i = -1;
-	if (argv[5] != NULL)
-		table->neat = ft_atoi(argv[5]);
-	else
-		table->neat = -1;
-	while (++i < table->phl)
-		pthread_mutex_init(&table->forktb[i].mutex_forktb, NULL);
+	forksandneats(table, argv);
 	ft_initphilos(table);
 }
 
@@ -107,12 +93,12 @@ void	ft_create(t_table *table)
 		pthread_mutex_destroy(&table->forktb[i].mutex_forktb);
 }
 
+	//atexit(ft_leaks);
 int	main(int argc, char **argv)
 {
 	t_table	table;
 	int		i;
 
-	atexit(ft_leaks);
 	if (ft_validargs(argc, argv) == 1)
 		return (1);
 	i = -1;

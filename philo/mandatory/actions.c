@@ -36,12 +36,7 @@ int	eating(t_philo *philo)
 	pthread_mutex_lock(&philo->fork_l->mutex_forktb);
 	philo->fork->forktb = 1;
 	philo->fork_l->forktb = 1;
-	printf("%s%ld %s%d%s has taken a fork%s\n", YELLOW,
-		philo->ttotal, GREEN, philo->philo, CYAN, RESET);
-	printf("%s%ld %s%d%s has taken a fork%s\n", YELLOW,
-		philo->ttotal, GREEN, philo->philo, CYAN, RESET);
-	printf("%s%ld %s%d%s is eating%s\n", YELLOW,
-		philo->ttotal, GREEN, philo->philo, BLUE, RESET);
+	print_eating(philo);
 	philo->td = philo->count + philo->die;
 	while (philo->count < temp)
 	{

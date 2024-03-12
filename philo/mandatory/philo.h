@@ -81,4 +81,6 @@ int		the_final(t_philo *philo);
 int		eating(t_philo *philo);
 int		sleeping(t_philo *philo);
 int		letsthink(t_philo *philo);
+void	print_eating(t_philo *philo);
+void	forksandneats(t_table *table, char **argv);
 #endif
