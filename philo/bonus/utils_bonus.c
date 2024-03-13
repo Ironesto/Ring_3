@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: gpaez-ga <gpaez-ga@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/04 17:05:22 by gpaez-ga          #+#    #+#             */
-/*   Updated: 2024/03/04 17:05:22 by gpaez-ga         ###   ########.fr       */
+/*   Created: 2024/03/13 19:44:54 by gpaez-ga          #+#    #+#             */
+/*   Updated: 2024/03/13 19:44:54 by gpaez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	close_sem(t_table *table)
 	i = 0;
 	if (waitpid(0, &status, 0) > 0)
 	{
-		while (i < table->phl)
+		while (i <= table->phl)
 		{
 			kill(table->philo[i], 9);
 			i++;

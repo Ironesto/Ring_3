@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: gpaez-ga <gpaez-ga@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/04 17:07:16 by gpaez-ga          #+#    #+#             */
-/*   Updated: 2024/03/04 17:07:16 by gpaez-ga         ###   ########.fr       */
+/*   Created: 2024/03/13 19:44:30 by gpaez-ga          #+#    #+#             */
+/*   Updated: 2024/03/13 19:44:30 by gpaez-ga         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	*ft_compdead(void *data)
 	philo = (t_philo *)data;
 	while (philo->count < philo->td)
 	{
-		usleep(1000);
+		usleep(100);
 		philo->count = ft_gettimephl(philo);
 		if (the_final(philo) == 1)
 			return (NULL);
@@ -105,7 +105,7 @@ int	main(int argc, char **argv)
 		{
 			philo = ft_initphilos(&table, i);
 			routine(&philo);
-			break ;
+			exit(0) ;
 		}
 		i++;
 	}
