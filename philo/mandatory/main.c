@@ -97,11 +97,11 @@ void	ft_create(t_table *table)
 int	main(int argc, char **argv)
 {
 	t_table	table;
-	int		i;
+	//int		i;
 
 	if (ft_validargs(argc, argv) == 1)
 		return (1);
-	i = -1;
+	//i = -1;
 	ft_init(&table, argv);
 	ft_create(&table);
 	free(table.tz);

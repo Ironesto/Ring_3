@@ -51,17 +51,20 @@ void	ft_init(t_table *table, char **argv)
 		table->neat = ft_atoi(argv[5]);
 }
 
-void	*ft_compdead(void *data)
+void *ft_compdead(void *data)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)data;
 	while (philo->count < philo->td)
 	{
-		usleep(100);
+		usleep(1000);
 		philo->count = ft_gettimephl(philo);
 		if (the_final(philo) == 1)
-			return (NULL);
+		{
+			philo->isdead = 1;
+			exit (1);
+		}
 	}
 	return (NULL);
 }
@@ -79,8 +82,10 @@ int	ft_validargs(int argc, char **argv)
 		k = 0;
 		while (argv[i][k])
 		{
-			if (argv[i][k] < '0' || argv[i][k] > '9')
+			if ((argv[i][k] < '0' || argv[i][k] > '9') && argv[i][k] != '+' && argv[i][k] != '-')
 				return (write(2, "Invalid arguments\n", 18), 1);
+			if (ft_atoi(argv[1]) <= 0 && k == '\0')
+				return (write(2, "Must be 1 or more\n", 18), 1);
 			k++;
 		}
 	}
@@ -105,7 +110,7 @@ int	main(int argc, char **argv)
 		{
 			philo = ft_initphilos(&table, i);
 			routine(&philo);
-			exit(0) ;
+			break ;
 		}
 		i++;
 	}

@@ -60,10 +60,14 @@ void	close_sem(t_table *table)
 {
 	int	i;
 	int	status;
+	int	exit;
 
 	i = 0;
-	if (waitpid(0, &status, 0) > 0)
+	waitpid(0, &status, 0);
+	exit = WEXITSTATUS(status);
+	if (exit == 1)
 	{
+
 		while (i <= table->phl)
 		{
 			kill(table->philo[i], 9);
