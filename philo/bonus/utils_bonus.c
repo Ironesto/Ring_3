@@ -67,7 +67,6 @@ void	close_sem(t_table *table)
 	exit = WEXITSTATUS(status);
 	if (exit == 1)
 	{
-
 		while (i <= table->phl)
 		{
 			kill(table->philo[i], 9);

@@ -24,6 +24,17 @@ int	the_final(t_philo *philo)
 	return (0);
 }
 
+void	ft_printeating(t_philo *philo)
+{
+	usleep(200);
+	printf("%s%ld %s%d%s has taken a fork%s\n", CYAN,
+		philo->ttotal, GREEN, philo->philo, YELLOW, RESET);
+	printf("%s%ld %s%d%s has taken a fork%s\n", CYAN,
+		philo->ttotal, GREEN, philo->philo, YELLOW, RESET);
+	printf("%s%ld %s%d%s is eating%s\n", CYAN,
+		philo->ttotal, GREEN, philo->philo, BLUE, RESET);
+}
+
 int	eating(t_philo *philo)
 {
 	time_t	temp;
@@ -36,15 +47,7 @@ int	eating(t_philo *philo)
 	sem_wait(philo->sem_eat);
 	philo->ttotal = ft_gettimephl(philo) - philo->ms;
 	if (philo->isdead == 0)
-	{
-		usleep(200);
-		printf("%s%ld %s%d%s has taken a fork%s\n", CYAN,
-			philo->ttotal, GREEN, philo->philo, YELLOW, RESET);
-		printf("%s%ld %s%d%s has taken a fork%s\n", CYAN,
-			philo->ttotal, GREEN, philo->philo, YELLOW, RESET);
-		printf("%s%ld %s%d%s is eating%s\n", CYAN,
-			philo->ttotal, GREEN, philo->philo, BLUE, RESET);
-	}
+		ft_printeating(philo);
 	else
 		return (1);
 	philo->td = philo->count + philo->die;

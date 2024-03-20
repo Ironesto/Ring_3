@@ -12,16 +12,16 @@
 
 #include "philo_bonus.h"
 
-void	ft_leaks(void)
+/* void	ft_leaks(void)
 {
 	system("leaks -q philo");
-}
+} */
 
 t_philo	ft_initphilos(t_table *table, int i)
 {
 	t_philo	philo;
 
-	philo.philo = i;
+	philo.philo = i + 1;
 	philo.isdead = 0;
 	philo.die = table->tdie;
 	if (table->neat)
@@ -51,7 +51,7 @@ void	ft_init(t_table *table, char **argv)
 		table->neat = ft_atoi(argv[5]);
 }
 
-void *ft_compdead(void *data)
+void	*ft_compdead(void *data)
 {
 	t_philo	*philo;
 
@@ -82,7 +82,8 @@ int	ft_validargs(int argc, char **argv)
 		k = 0;
 		while (argv[i][k])
 		{
-			if ((argv[i][k] < '0' || argv[i][k] > '9') && argv[i][k] != '+' && argv[i][k] != '-')
+			if ((argv[i][k] < '0' || argv[i][k] > '9')
+				&& argv[i][k] != '+' && argv[i][k] != '-')
 				return (write(2, "Invalid arguments\n", 18), 1);
 			if (ft_atoi(argv[1]) <= 0 && k == '\0')
 				return (write(2, "Must be 1 or more\n", 18), 1);
@@ -92,13 +93,13 @@ int	ft_validargs(int argc, char **argv)
 	return (0);
 }
 
+	//atexit(ft_leaks);
 int	main(int argc, char **argv)
 {
 	t_table	table;
 	int		i;
 	t_philo	philo;
 
-	//atexit(ft_leaks);
 	if (ft_validargs(argc, argv) == 1)
 		return (1);
 	ft_init(&table, argv);

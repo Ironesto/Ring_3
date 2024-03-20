@@ -24,7 +24,7 @@ void	ft_initphilos(t_table *table)
 	i = 0;
 	while (i < table->phl)
 	{
-		table->philo[i].philo = i;
+		table->philo[i].philo = i + 1;
 		table->philo[i].sd = &table->isdead[0];
 		table->philo[i].die = table->tdie;
 		table->philo[i].neat = table->neat;
@@ -97,11 +97,9 @@ void	ft_create(t_table *table)
 int	main(int argc, char **argv)
 {
 	t_table	table;
-	//int		i;
 
 	if (ft_validargs(argc, argv) == 1)
 		return (1);
-	//i = -1;
 	ft_init(&table, argv);
 	ft_create(&table);
 	free(table.tz);
