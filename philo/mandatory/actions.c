@@ -76,7 +76,7 @@ int	letsthink(t_philo *philo)
 		philo->ttotal, GREEN, philo->philo, RESET);
 	while (philo->fork_l == NULL)
 	{
-		usleep(500);
+		usleep(100);
 		philo->count = ft_gettimephl(philo);
 		if (the_final(philo) == 1)
 			return (1);
@@ -84,7 +84,7 @@ int	letsthink(t_philo *philo)
 	while (philo->fork->forktb != 0 || philo->fork_l->forktb != 0)
 	{
 		philo->count = ft_gettimephl(philo);
-		usleep(500);
+		usleep(100);
 		if (the_final(philo) == 1)
 			return (1);
 	}
@@ -107,6 +107,7 @@ void	*routine(void *data)
 			if (ft_haveforks(philo) == 1)
 				return (NULL);
 		}
+		usleep (5000);
 		if (philo->fork->forktb != 0 || philo->fork_l->forktb != 0)
 			if (letsthink(philo) == 1)
 				return (NULL);

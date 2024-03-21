@@ -26,6 +26,8 @@ t_philo	ft_initphilos(t_table *table, int i)
 	philo.die = table->tdie;
 	if (table->neat)
 		philo.neat = table->neat;
+/* 	else
+		philo.neat = -1; */
 	philo.td = ft_gettime(table) + table->tdie;
 	philo.count = ft_gettime(table);
 	philo.eat = table->teat;
@@ -49,6 +51,8 @@ void	ft_init(t_table *table, char **argv)
 	table->sem_eat = sem_open("/forks", O_CREAT, 0644, table->forks);
 	if (argv[5])
 		table->neat = ft_atoi(argv[5]);
+/* 	else
+		table->neat = -1; */
 }
 
 void	*ft_compdead(void *data)

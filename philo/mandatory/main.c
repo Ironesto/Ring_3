@@ -81,7 +81,7 @@ void	ft_create(t_table *table)
 	i = -1;
 	while (++i < table->phl)
 	{
-		usleep(50);
+		usleep(100);
 		pthread_create(&table->philo[i].ph_thread,
 			NULL, routine, &table->philo[i]);
 	}
