@@ -84,7 +84,6 @@ int	letsthink(t_philo *philo)
 	while (philo->fork->forktb != 0 || philo->fork_l->forktb != 0)
 	{
 		philo->count = ft_gettimephl(philo);
-		usleep(100);
 		if (the_final(philo) == 1)
 			return (1);
 	}
